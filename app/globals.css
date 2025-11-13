@@ -1,0 +1,553 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sky: #63cbfd;
+  --navy: #050609;
+  --ink: #050609;
+  --paper: #f5f5f9;
+  --accord: #050609;
+  --background: 240 5% 96%;
+  --foreground: 224 76% 18%;
+  --card: 0 0% 100%;
+  --card-foreground: 224 76% 18%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 224 76% 18%;
+  --primary: 224 76% 18%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 220 13% 91%;
+  --secondary-foreground: 224 76% 18%;
+  --muted: 220 13% 91%;
+  --muted-foreground: 220 9% 46%;
+  --accent: 220 13% 91%;
+  --accent-foreground: 224 76% 18%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 224 76% 48%;
+  --radius: 0.5rem;
+  --font-archivo: "Archivo", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --container-max-width: 80rem; /* 1280px */
+  --section-y-padding: clamp(4rem, 8vw, 8rem); /* 64px to 128px */
+  --block-gap: clamp(1.25rem, 2vw, 2.5rem); /* 20px to 40px */
+  --grid-gap: clamp(1rem, 2vw, 2rem); /* 16px to 32px */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply text-text-primary;
+    font-family: var(--font-inter);
+    font-display: swap;
+    font-size: 1.125rem; /* 18px instead of 17px */
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    /* Made texture much more visible with higher opacity and contrast */
+    background-color: hsl(240 5% 96%); /* Set base color directly instead of using bg-background class */
+    background-image: radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.12) 1px, transparent 0);
+    background-size: 12px 12px;
+    position: relative;
+  }
+
+  /* Made overlay more subtle so texture shows through */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(245, 245, 249, 0.3) 0%,
+      rgba(245, 245, 249, 0.1) 50%,
+      rgba(245, 245, 249, 0.3) 100%
+    );
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading font-bold tracking-tight;
+  }
+
+  h1 {
+    font-family: var(--font-archivo), system-ui, sans-serif;
+    font-weight: 900;
+    font-display: swap;
+    font-size: 3.125rem; /* Increased from 2.5rem */
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+  }
+
+  h2 {
+    font-size: 2.5rem; /* Increased from 2rem */
+  }
+
+  h3 {
+    font-size: 2.1875rem; /* Increased from 1.75rem */
+  }
+
+  h4 {
+    font-size: 1.8rem; /* Increased from 1.5rem */
+  }
+
+  h5 {
+    font-size: 1.5rem; /* Increased from 1.25rem */
+  }
+
+  h6 {
+    font-size: 1.2rem; /* Increased from 1rem */
+  }
+
+  h1 {
+    @apply text-5xl md:text-6xl lg:text-7xl;
+  }
+  h2 {
+    @apply text-4xl md:text-5xl;
+  }
+  h3 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  p {
+    @apply text-text-muted leading-relaxed;
+    line-height: 1.7;
+  }
+
+  /* Responsive heading sizes */
+  @media (min-width: 768px) {
+    h1 {
+      font-size: 4rem; /* Increased from 3.25rem */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    h1 {
+      font-size: 5rem; /* Increased from 4rem */
+    }
+  }
+
+  /* Focus styles */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-accent-accord ring-offset-2 ring-offset-background;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .text-navy {
+    color: #050609;
+  }
+  .text-sky {
+    color: #63cbfd;
+  }
+  .text-ink {
+    color: #050609;
+  }
+  .text-accord {
+    color: #050609;
+  }
+  .bg-navy {
+    background-color: #050609;
+  }
+  .bg-sky {
+    background-color: #63cbfd;
+  }
+  .bg-paper {
+    background-color: #f5f5f9;
+  }
+  .bg-ink {
+    background-color: #050609;
+  }
+  .bg-accord {
+    background-color: #050609;
+  }
+  .border-navy {
+    border-color: #050609;
+  }
+  .border-sky {
+    border-color: #63cbfd;
+  }
+
+  /* Updated CSS rules for hierarchical legal numbering with proper spacing and counter management */
+  .rules-content ol {
+    margin: 0.5rem 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .rules-content ol.depth-1 {
+    counter-reset: d1;
+    margin-left: 0;
+  }
+
+  .rules-content ol.depth-1 > li {
+    counter-increment: d1;
+    margin: 0.25rem 0;
+    padding-left: 0.5rem;
+    line-height: 1.6;
+  }
+
+  .rules-content ol.depth-1 > li::before {
+    content: counter(d1) ". ";
+    font-weight: 600;
+    margin-right: 0.5rem;
+    color: #374151;
+  }
+
+  .rules-content ol.depth-2 {
+    counter-reset: d2;
+    margin-left: 1.5rem;
+  }
+
+  .rules-content ol.depth-2 > li {
+    counter-increment: d2;
+    margin: 0.25rem 0;
+    padding-left: 0.5rem;
+    line-height: 1.6;
+  }
+
+  .rules-content ol.depth-2 > li::before {
+    content: "(" counter(d2, lower-alpha) ") ";
+    font-weight: 500;
+    margin-right: 0.5rem;
+    color: #374151;
+  }
+
+  .rules-content ol.depth-3 {
+    counter-reset: d3;
+    margin-left: 3rem;
+  }
+
+  .rules-content ol.depth-3 > li {
+    counter-increment: d3;
+    margin: 0.25rem 0;
+    padding-left: 0.5rem;
+    line-height: 1.6;
+  }
+
+  .rules-content ol.depth-3 > li::before {
+    content: "(" counter(d3) ") ";
+    font-weight: 500;
+    margin-right: 0.5rem;
+    color: #374151;
+  }
+
+  .rules-content ol.depth-4 {
+    counter-reset: d4;
+    margin-left: 4.5rem;
+  }
+
+  .rules-content ol.depth-4 > li {
+    counter-increment: d4;
+    margin: 0.25rem 0;
+    padding-left: 0.5rem;
+    line-height: 1.6;
+  }
+
+  .rules-content ol.depth-4 > li::before {
+    content: "(" counter(d4, upper-alpha) ") ";
+    font-weight: 500;
+    margin-right: 0.5rem;
+    color: #374151;
+  }
+
+  /* Updated legal document formatting with proper CSS counters for hierarchical numbering */
+  /* Top-level (decimal) */
+  .ol-depth-1 {
+    list-style: decimal;
+    margin-left: 1.25rem;
+  }
+
+  /* (a), (b), (c) … */
+  .paren-alpha {
+    list-style: none;
+    counter-reset: alpha;
+    margin-left: 1.5rem;
+  }
+  .paren-alpha > li {
+    counter-increment: alpha;
+  }
+  .paren-alpha > li::marker {
+    content: "";
+  }
+  .paren-alpha > li::before {
+    content: "(" counter(alpha, lower-alpha) ") ";
+    font-weight: 500;
+    color: #374151;
+  }
+
+  /* (1), (2), (3) … */
+  .paren-decimal {
+    list-style: none;
+    counter-reset: dec;
+    margin-left: 1.5rem;
+  }
+  .paren-decimal > li {
+    counter-increment: dec;
+  }
+  .paren-decimal > li::marker {
+    content: "";
+  }
+  .paren-decimal > li::before {
+    content: "(" counter(dec) ") ";
+    font-weight: 500;
+    color: #374151;
+  }
+
+  /* (i), (ii), (iii) … */
+  .paren-roman {
+    list-style: none;
+    counter-reset: roman;
+    margin-left: 1.5rem;
+  }
+  .paren-roman > li {
+    counter-increment: roman;
+  }
+  .paren-roman > li::marker {
+    content: "";
+  }
+  .paren-roman > li::before {
+    content: "(" counter(roman, lower-roman) ") ";
+    font-weight: 500;
+    color: #374151;
+  }
+
+  /* Improved spacing and indentation for legal document lists */
+  .ol-depth-1 > li,
+  .paren-alpha > li,
+  .paren-decimal > li,
+  .paren-roman > li {
+    margin: 0.25rem 0;
+    padding-left: 0.5rem;
+    line-height: 1.6;
+  }
+
+  /* Enhanced nested list indentation for better visual hierarchy */
+  .ol-depth-2 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .ol-depth-3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .ol-depth-4 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Legal document list styles with proper hierarchical numbering */
+  .list-\[lower-alpha\] {
+    list-style-type: lower-alpha;
+    counter-reset: list-counter;
+  }
+
+  .list-\[lower-alpha\] > li {
+    display: list-item;
+    list-style-position: outside;
+    margin-left: 1.5rem;
+  }
+
+  .list-\[lower-alpha\] > li::marker {
+    content: "(" counter(list-item, lower-alpha) ") ";
+  }
+
+  .list-\[lower-roman\] {
+    list-style-type: lower-roman;
+    counter-reset: list-counter;
+  }
+
+  .list-\[lower-roman\] > li {
+    display: list-item;
+    list-style-position: outside;
+    margin-left: 1.5rem;
+  }
+
+  .list-\[lower-roman\] > li::marker {
+    content: "(" counter(list-item, lower-roman) ") ";
+  }
+
+  /* Override default decimal list styling for legal documents */
+  .legal-decimal {
+    list-style-type: decimal;
+    counter-reset: list-counter;
+  }
+
+  .legal-decimal > li {
+    display: list-item;
+    list-style-position: outside;
+    margin-left: 1.5rem;
+  }
+
+  .legal-decimal > li::marker {
+    content: "(" counter(list-item, decimal) ") ";
+  }
+
+  /* Nested list indentation for legal documents */
+  .legal-list-level-1 {
+    margin-left: 0;
+    padding-left: 1.5rem;
+  }
+
+  .legal-list-level-2 {
+    margin-left: 1rem;
+    padding-left: 2rem;
+  }
+
+  .legal-list-level-3 {
+    margin-left: 2rem;
+    padding-left: 2.5rem;
+  }
+
+  /* Added comprehensive semi-transparent background classes for texture visibility */
+  .bg-white-texture {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+  }
+
+  .bg-ink-texture {
+    background: rgba(5, 6, 9, 0.92);
+    backdrop-filter: blur(8px);
+  }
+
+  .bg-card-texture {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(6px);
+  }
+
+  .bg-section-texture {
+    background: rgba(240, 242, 247, 0.6);
+    backdrop-filter: blur(4px);
+  }
+
+  .bg-gray-texture {
+    background: rgba(249, 250, 251, 0.7);
+    backdrop-filter: blur(6px);
+  }
+
+  .bg-modal-texture {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Enhanced shadows */
+  .shadow-custom {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  .shadow-custom-lg {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+  .shadow-custom-xl {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Added section dividers and texture utilities */
+  .section-divider {
+    position: relative;
+  }
+
+  .section-divider::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+  }
+
+  .texture-paper {
+    background-color: #fafafa;
+    background-image: radial-gradient(circle at 2px 2px, rgba(0, 0, 0, 0.06) 1px, transparent 0);
+    background-size: 18px 18px;
+  }
+
+  .texture-subtle {
+    background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.02) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(0, 0, 0, 0.02) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(0, 0, 0, 0.02) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(0, 0, 0, 0.02) 75%);
+    background-size: 24px 24px;
+    background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+  }
+
+  .elevated-section {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 12px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Better button interactions */
+  .btn-press {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  /* Enhanced focus styles */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-accord focus:ring-offset-2;
+  }
+
+  /* Hero background gradient */
+  .bg-hero-gradient {
+    background: radial-gradient(ellipse at 50% 40%, rgba(247, 250, 255, 0.6) 0%, rgba(250, 250, 250, 0.4) 60%);
+  }
+
+  /* Button utility classes */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-ink text-white px-5 py-3 font-semibold shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+  .btn-primary:hover {
+    @apply bg-ink-900;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-3 font-semibold text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+  .btn-secondary:hover {
+    @apply border-gray-400 bg-gray-50;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
