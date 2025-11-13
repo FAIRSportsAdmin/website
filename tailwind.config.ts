@@ -7,6 +7,12 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./lib/**/*.{js,ts,jsx,tsx,mdx}",
+    "./**/*.{js,ts,jsx,tsx,mdx}", // Catch-all pattern
+  ],
+  safelist: [
+    {
+      pattern: /./, // Keep all classes
+    },
   ],
   theme: {
     container: {
