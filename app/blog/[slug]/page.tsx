@@ -3,7 +3,7 @@ import { renderNotionBlocks } from "@/lib/notion-render"
 import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Calendar, User, ArrowLeft, Share2 } from 'lucide-react'
+import { Calendar, User, ArrowLeft, Share2 } from "lucide-react"
 import Link from "next/link"
 import { createMetadata } from "@/lib/metadata"
 import Image from "next/image"
@@ -15,11 +15,11 @@ export async function generateStaticParams() {
   return posts
     .map((p) => p.slug)
     .filter((slug): slug is string => !!slug && slug.trim().length > 0)
-  .map((slug) => ({ slug }))
+    .map((slug) => ({ slug }))
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const { slug } = params
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const post = await getBlogPostBySlug(slug)
   if (!post) {
     return createMetadata({
@@ -35,8 +35,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   })
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const { slug } = params
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const post = await getBlogPostBySlug(slug)
   if (!post) notFound()
 
@@ -57,9 +57,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
         <article>
           <header className="mb-8">
-            {post!.tags && post!.tags.length > 0 && (
+            {post.tags && post.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
-                {post!.tags.map((tag) => (
+                {post.tags.map((tag) => (
                   <Badge key={tag} variant="secondary" className="bg-sky/10 text-navy">
                     {tag}
                   </Badge>
@@ -67,19 +67,19 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               </div>
             )}
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-ink mb-6 leading-tight">{post!.title}</h1>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-ink mb-6 leading-tight">{post.title}</h1>
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-gray-600 mb-6">
-              {post!.author && (
+              {post.author && (
                 <div className="flex items-center gap-2">
                   <User className="w-5 h-5" />
-                  <span className="font-medium">{post!.author}</span>
+                  <span className="font-medium">{post.author}</span>
                 </div>
               )}
-              {post!.publish_date && (
+              {post.publish_date && (
                 <div className="flex items-center gap-2">
                   <Calendar className="w-5 h-5" />
-                  <span>{formatDate(post!.publish_date)}</span>
+                  <span>{formatDate(post.publish_date)}</span>
                 </div>
               )}
               <Button variant="ghost" size="sm" className="text-accord hover:text-accord/80 sm:ml-auto">
@@ -88,11 +88,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               </Button>
             </div>
 
-            {post!.cover_image && (
+            {post.cover_image && (
               <div className="aspect-video rounded-2xl overflow-hidden shadow-lg mb-8 relative">
                 <Image
-                  src={post!.cover_image || "/placeholder.svg"}
-                  alt={post!.title}
+                  src={post.cover_image || "/placeholder.svg"}
+                  alt={post.title}
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 1024px"
@@ -103,15 +103,18 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           </header>
 
           <div className="bg-white rounded-2xl shadow-lg p-8 lg:p-12 mb-8">
-            <div className="notion-content text-gray-700" dangerouslySetInnerHTML={{ __html: renderNotionBlocks(post!.body) }} />
+            <div
+              className="notion-content text-gray-700"
+              dangerouslySetInnerHTML={{ __html: renderNotionBlocks(post.body) }}
+            />
           </div>
 
           <footer className="bg-white rounded-2xl shadow-lg p-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              {post!.tags && post!.tags.length > 0 && (
+              {post.tags && post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   <span className="text-sm font-medium text-navy">Tags:</span>
-                  {post!.tags.map((tag) => (
+                  {post.tags.map((tag) => (
                     <Badge key={tag} variant="outline" className="border-sky text-navy hover:bg-sky/10">
                       {tag}
                     </Badge>

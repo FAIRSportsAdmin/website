@@ -2,7 +2,7 @@ import { getAdvisorBySlug, getAdvisorsData } from "@/lib/notion-data"
 import { renderNotionBlocks } from "@/lib/notion-render"
 import { notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { createMetadata } from "@/lib/metadata"
 import Image from "next/image"
@@ -17,8 +17,8 @@ export async function generateStaticParams() {
     .map((slug) => ({ slug }))
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const { slug } = params
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const advisor = await getAdvisorBySlug(slug)
   if (!advisor) {
     return createMetadata({
@@ -34,8 +34,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   })
 }
 
-export default async function AdvisorPage({ params }: { params: { slug: string } }) {
-  const { slug } = params
+export default async function AdvisorPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const advisor = await getAdvisorBySlug(slug)
   if (!advisor) notFound()
 

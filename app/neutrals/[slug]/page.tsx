@@ -3,7 +3,7 @@ import { renderNotionBlocks } from "@/lib/notion-render"
 import { notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { createMetadata } from "@/lib/metadata"
 import Image from "next/image"
@@ -18,8 +18,8 @@ export async function generateStaticParams() {
     .map((slug) => ({ slug }))
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const { slug } = params
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const neutral = await getNeutralBySlug(slug)
   if (!neutral) {
     return createMetadata({
@@ -35,8 +35,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   })
 }
 
-export default async function NeutralPage({ params }: { params: { slug: string } }) {
-  const { slug } = params
+export default async function NeutralPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const neutral = await getNeutralBySlug(slug)
   if (!neutral) notFound()
 
@@ -79,7 +79,9 @@ export default async function NeutralPage({ params }: { params: { slug: string }
                     ))}
                   </div>
                 )}
-                {neutral!.short_bio && <p className="text-lg text-gray-600 leading-relaxed mb-6">{neutral!.short_bio}</p>}
+                {neutral!.short_bio && (
+                  <p className="text-lg text-gray-600 leading-relaxed mb-6">{neutral!.short_bio}</p>
+                )}
               </div>
             </div>
           </div>
