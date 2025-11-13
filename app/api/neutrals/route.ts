@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
 import { getNeutralsData, getNeutralBySlug } from "@/lib/notion-data"
-import { renderNotionBlocks } from "@/lib/notion-render"
 
 export async function GET() {
   try {
@@ -8,9 +7,39 @@ export async function GET() {
 
     const neutralsWithHTML = await Promise.all(
       neutrals.map(async (neutral) => {
-        const fullNeutral = await getNeutralBySlug(neutral.slug)
-        const bodyHTML = fullNeutral?.body?.length ? renderNotionBlocks(fullNeutral.body) : ""
-        return { ...neutral, bodyHTML }
+        try {
+          // Fetch full neutral data including page body
+          const fullNeutral = await getNeutralBySlug(neutral.slug)
+
+          if (fullNeutral?.body && fullNeutral.body.length > 0) {
+            // Extract text from the first few blocks for preview
+            const textBlocks = fullNeutral.body
+              .filter((block: any) => block.type === "paragraph" && block.paragraph?.rich_text?.length > 0)
+              .slice(0, 3) // Take first 3 paragraphs
+
+            const paragraphs = textBlocks
+              .map((block: any) => {
+                const text = block.paragraph.rich_text.map((t: any) => t.plain_text).join("")
+                return `<p>${text}</p>`
+              })
+              .join("")
+
+            return {
+              ...neutral,
+              bodyHTML: paragraphs || neutral.full_bio ? `<p>${neutral.full_bio}</p>` : "",
+            }
+          }
+        } catch (error) {
+          console.error(`[v0] Failed to fetch body for neutral ${neutral.slug}:`, error)
+        }
+
+        // Fallback to full_bio property if page content fetch fails
+        return {
+          ...neutral,
+          bodyHTML: neutral.full_bio
+            ? `<p>${neutral.full_bio.replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br>")}</p>`
+            : "",
+        }
       }),
     )
 

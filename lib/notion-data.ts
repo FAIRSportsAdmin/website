@@ -152,6 +152,8 @@ export const getNeutralsData = cached(
             title: getPlainText(page.properties.Name?.title),
           })
 
+          const pageBody = await getPageContent(page.id)
+
           return {
             id: page.id,
             slug: getPlainText(page.properties.slug?.rich_text),
@@ -161,6 +163,7 @@ export const getNeutralsData = cached(
             full_bio: getPlainText(page.properties["full bio"]?.rich_text),
             tags: page.properties.tags?.multi_select?.map((t: any) => t.name) || [],
             order: page.properties.order?.number || 999,
+            body: pageBody, // Include body in the list query
           }
         }),
       )
@@ -179,7 +182,7 @@ export const getNeutralsData = cached(
         status: error.status,
         body: error.body,
       })
-      throw error // Don't swallow errors, let them bubble up
+      throw error
     }
   },
   ["neutrals:list"],
@@ -208,6 +211,8 @@ export const getAdvisorsData = cached(
             title: getPlainText(page.properties.Name?.title),
           })
 
+          const pageBody = await getPageContent(page.id)
+
           return {
             id: page.id,
             slug: getPlainText(page.properties.slug?.rich_text),
@@ -217,6 +222,7 @@ export const getAdvisorsData = cached(
             bio: getPlainText(page.properties.bio?.rich_text),
             short_bio: getPlainText(page.properties["short bio"]?.rich_text),
             order: page.properties.order?.number || 999,
+            body: pageBody, // Include body in the list query
           }
         }),
       )
@@ -232,7 +238,7 @@ export const getAdvisorsData = cached(
         status: error.status,
         body: error.body,
       })
-      throw error // Don't swallow errors, let them bubble up
+      throw error
     }
   },
   ["advisors:list"],
@@ -541,7 +547,7 @@ export const getOmbudsData = cached(
         status: error.status,
         body: error.body,
       })
-      throw error // Don't swallow errors, let them bubble up
+      throw error
     }
   },
   ["ombuds:list"],

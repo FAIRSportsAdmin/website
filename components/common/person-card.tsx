@@ -20,12 +20,6 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
 
-  console.log(`[v0] PersonCard for ${person.title} (${type}):`, {
-    hasBodyHTML: !!bodyHTML,
-    bodyHTMLLength: bodyHTML?.length || 0,
-    bodyHTMLPreview: bodyHTML?.substring(0, 100) || "No bodyHTML",
-  })
-
   const isNeutral = type === "neutral"
   const isOmbud = type === "ombud"
   const tags = isNeutral || isOmbud ? (person as NotionNeutral).tags : []
@@ -44,12 +38,10 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
   const imageSrc = getImageSrc()
 
   const handleImageError = () => {
-    console.log(`[v0] Image failed for ${person.title}:`, imageSrc)
     setImageError(true)
   }
 
   const handleImageLoad = () => {
-    console.log(`[v0] Image loaded successfully for ${person.title}:`, imageSrc)
     setImageLoaded(true)
   }
 

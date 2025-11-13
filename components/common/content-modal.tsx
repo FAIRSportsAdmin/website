@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogOverlay } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { motion, AnimatePresence } from "framer-motion"
@@ -12,20 +13,56 @@ interface ContentModalProps {
   onClose: () => void
   person: NotionAdvisor | NotionNeutral
   type: PersonType
-  bodyHTML?: string // Added optional pre-rendered HTML prop
+  bodyHTML?: string
 }
 
 export function ContentModal({ isOpen, onClose, person, type, bodyHTML }: ContentModalProps) {
+  const [modalBodyHTML, setModalBodyHTML] = useState<string>(bodyHTML || "")
+  const [loadingBody, setLoadingBody] = useState(false)
+
   const isNeutral = type === "neutral"
   const isOmbud = type === "ombud"
   const tags = isNeutral || isOmbud ? (person as NotionNeutral).tags : []
   const role = !isNeutral && !isOmbud ? (person as NotionAdvisor).role : undefined
   const bio = !isNeutral && !isOmbud ? (person as NotionAdvisor).bio : undefined
 
+  useEffect(() => {
+    async function fetchFullBody() {
+      if (!isOpen || !person.slug) return
+
+      // If we already have substantial content, don't fetch
+      if (bodyHTML && bodyHTML.length > 200) {
+        setModalBodyHTML(bodyHTML)
+        return
+      }
+
+      setLoadingBody(true)
+      try {
+        // Fetch full page content with rendered Notion blocks
+        const endpoint = type === "advisor" ? "advisors-and-leadership" : type === "ombud" ? "ombuds" : "neutrals"
+        const response = await fetch(`/api/${endpoint}/${person.slug}`)
+
+        if (response.ok) {
+          const data = await response.json()
+          setModalBodyHTML(data.bodyHTML || bodyHTML || "")
+        } else {
+          setModalBodyHTML(bodyHTML || "")
+        }
+      } catch (error) {
+        console.error("[v0] Failed to fetch full body:", error)
+        setModalBodyHTML(bodyHTML || "")
+      } finally {
+        setLoadingBody(false)
+      }
+    }
+
+    fetchFullBody()
+  }, [isOpen, person.slug, bodyHTML, type])
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogOverlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
-      <DialogContent className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border-0">
+      <DialogContent className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] max-w-6xl w-[95vw] max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border-0">
         <DialogHeader className="sr-only">
           <DialogTitle>{person.title}</DialogTitle>
         </DialogHeader>
@@ -37,9 +74,9 @@ export function ContentModal({ isOpen, onClose, person, type, bodyHTML }: Conten
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="flex flex-col lg:flex-row gap-8 p-6"
+              className="flex flex-col lg:flex-row gap-8 lg:gap-12 p-6 lg:p-8"
             >
-              <div className="flex-shrink-0 lg:w-80">
+              <div className="flex-shrink-0 lg:w-96">
                 <div className="relative">
                   <div className="relative w-full aspect-[4/5]">
                     <img
@@ -52,7 +89,7 @@ export function ContentModal({ isOpen, onClose, person, type, bodyHTML }: Conten
                 </div>
               </div>
 
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <h2
                   className="text-3xl font-black text-ink mb-4 leading-tight"
                   style={{ fontFamily: "var(--font-archivo), system-ui, sans-serif" }}
@@ -76,10 +113,16 @@ export function ContentModal({ isOpen, onClose, person, type, bodyHTML }: Conten
 
                 {bio && <p className="text-lg text-gray-600 leading-relaxed mb-6">{bio}</p>}
 
-                {bodyHTML ? (
+                {loadingBody ? (
+                  <div className="space-y-2 mt-4">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6" />
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-4/6" />
+                  </div>
+                ) : modalBodyHTML ? (
                   <div
                     className="prose prose-lg max-w-none prose-headings:text-navy prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-accord prose-a:no-underline hover:prose-a:underline prose-ul:text-gray-700 prose-li:text-gray-700"
-                    dangerouslySetInnerHTML={{ __html: bodyHTML }}
+                    dangerouslySetInnerHTML={{ __html: modalBodyHTML }}
                   />
                 ) : (
                   <div className="text-gray-500 italic">Additional details coming soon.</div>
