@@ -62,7 +62,7 @@ export function ContentModal({ isOpen, onClose, person, type, bodyHTML }: Conten
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogOverlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
-      <DialogContent className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] max-w-6xl w-[95vw] max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border-0">
+      <DialogContent className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] max-w-4xl w-[95vw] max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border-0">
         <DialogHeader className="sr-only">
           <DialogTitle>{person.title}</DialogTitle>
         </DialogHeader>
@@ -74,10 +74,10 @@ export function ContentModal({ isOpen, onClose, person, type, bodyHTML }: Conten
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="flex flex-col lg:flex-row gap-8 lg:gap-12 p-6 lg:p-8"
+              className="p-6 lg:p-8"
             >
-              <div className="flex-shrink-0 lg:w-80">
-                <div className="relative">
+              <div className="flex flex-col items-center mb-8">
+                <div className="relative w-full max-w-sm">
                   <div className="relative w-full aspect-[4/5]">
                     <img
                       src={person.photo || "/placeholder.svg?height=400&width=320&text=No+Image"}
@@ -89,7 +89,7 @@ export function ContentModal({ isOpen, onClose, person, type, bodyHTML }: Conten
                 </div>
               </div>
 
-              <div className="flex-1 min-w-0">
+              <div className="w-full">
                 <h2
                   className="text-3xl font-black text-ink mb-4 leading-tight"
                   style={{ fontFamily: "var(--font-archivo), system-ui, sans-serif" }}
