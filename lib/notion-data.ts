@@ -40,6 +40,7 @@ export interface NotionAdvisor {
   bio: string
   short_bio: string
   order: number
+  tags: string[] // Added tags field for advisors to support additional labels like "Investor"
   body?: any[] // Body is now optional
 }
 
@@ -222,6 +223,7 @@ export const getAdvisorsData = cached(
             bio: getPlainText(page.properties.bio?.rich_text),
             short_bio: getPlainText(page.properties["short bio"]?.rich_text),
             order: page.properties.order?.number || 999,
+            tags: page.properties.tags?.multi_select?.map((t: any) => t.name) || [], // Added tags field to fetch multi-select tags from Notion
             body: pageBody, // Include body in the list query
           }
         }),
@@ -356,6 +358,7 @@ export const getAdvisorBySlug = (slug: string) =>
           bio: getPlainText(page.properties.bio?.rich_text),
           short_bio: getPlainText(page.properties["short bio"]?.rich_text),
           order: page.properties.order?.number || 999,
+          tags: page.properties.tags?.multi_select?.map((t: any) => t.name) || [], // Added tags field to fetch multi-select tags from Notion
           body: await getPageContent(page.id),
         }
       } catch (error) {

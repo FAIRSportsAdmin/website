@@ -22,7 +22,8 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
 
   const isNeutral = type === "neutral"
   const isOmbud = type === "ombud"
-  const tags = isNeutral || isOmbud ? (person as NotionNeutral).tags : []
+  const isAdvisor = type === "advisor"
+  const tags = isNeutral || isOmbud ? (person as NotionNeutral).tags : isAdvisor ? (person as NotionAdvisor).tags : []
   const role = !isNeutral && !isOmbud ? (person as NotionAdvisor).role : undefined
 
   const getImageSrc = () => {
@@ -119,7 +120,7 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
             )}
 
             <div className="flex-1 flex flex-col justify-end min-h-0">
-              {tags && tags.length > 0 && !isOmbud && (
+              {tags && tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {tags.slice(0, 2).map((tag, index) => (
                     <Badge
