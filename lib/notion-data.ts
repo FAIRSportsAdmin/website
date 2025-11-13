@@ -485,7 +485,7 @@ export const getOmbudsBySlug = (slug: string) =>
       }
     },
     ["ombuds:by-slug", slug],
-    { tags: ["ombuds"], revalidate: 3600 },
+    { tags: ["ombuds"], revalidate: 60 },
   )()
 
 export const getOmbudsData = cached(
@@ -521,12 +521,6 @@ export const getOmbudsData = cached(
 
           const pageBody = await getPageContent(page.id)
 
-          console.log("[v0] Ombud processed:", {
-            name,
-            photoUrl: canonicalPhoto,
-            hasPhoto: !!canonicalPhoto && canonicalPhoto.includes("blob.vercel-storage.com"),
-          })
-
           return {
             id: page.id,
             slug: finalSlug,
@@ -553,7 +547,7 @@ export const getOmbudsData = cached(
     }
   },
   ["ombuds:list"],
-  { tags: ["ombuds"], revalidate: 0 },
+  { tags: ["ombuds"], revalidate: 60 },
 )
 
 export const getNeutrals = getNeutralsData

@@ -5,15 +5,6 @@ import { PersonGrid } from "@/components/common/person-grid"
 export default async function OmbudsListServer() {
   const ombuds = await getOmbudsData()
 
-  console.log(
-    "[v0] Ombuds in component:",
-    ombuds.map((o) => ({
-      title: o.title,
-      photo: o.photo,
-      hasPhoto: !!o.photo,
-    })),
-  )
-
   const ombudsWithHTML = ombuds.map((ombud) => {
     const bodyHTML = ombud.body?.length ? renderNotionBlocks(ombud.body) : ""
     return { ...ombud, bodyHTML }
