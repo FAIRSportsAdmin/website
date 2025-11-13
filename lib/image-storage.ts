@@ -88,24 +88,20 @@ export async function ingestImage(
         access: "public",
         contentType,
         cacheControl: "public, max-age=31536000, immutable",
-        addRandomSuffix: forceRefresh, // Add suffix to filename when refreshing
+        addRandomSuffix: true, // Always add random suffix to avoid conflicts
       })
 
       return { success: true, canonicalUrl: blob.url }
     } catch (error) {
       // Handle Vercel Blob API errors, including JSON parsing issues
       const errorMessage = error instanceof Error ? error.message : "Unknown error"
-      console.warn(`Blob upload failed for ${filename}:`, errorMessage)
+      console.error(`[SERVER] Blob upload failed for ${filename}:`, errorMessage)
 
-      // If it's a JSON parsing error, it might be a rate limit or API issue
-      if (errorMessage.includes("JSON") || errorMessage.includes("Too Many")) {
-        return { success: false, error: "Blob storage temporarily unavailable" }
-      }
-
+      // If it's a JSON parsing error or rate limit, fall back to placeholder
       return { success: false, error: errorMessage }
     }
   } catch (error) {
-    console.error("Image ingestion failed:", error)
+    console.error("[SERVER] Image ingestion failed:", error)
     return { success: false, error: error instanceof Error ? error.message : "Unknown error" }
   }
 }
