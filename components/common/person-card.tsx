@@ -54,7 +54,7 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
   }
 
   const getPreviewText = () => {
-    if ((isNeutral || isOmbud) && bodyHTML) {
+    if (bodyHTML) {
       if (typeof document === "undefined") return ""
 
       const tempDiv = document.createElement("div")
@@ -64,7 +64,7 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
       const preview = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "." : "")
       return preview.length > 120 ? preview.substring(0, 120) + "..." : preview
     }
-    return !isNeutral && !isOmbud ? (person as NotionAdvisor).bio : ""
+    return ""
   }
 
   return (

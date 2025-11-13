@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { usePathname } from "next/navigation"
 import { Menu, X, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -14,9 +14,18 @@ export function NavigationFinal() {
   const [isDarkTheme, setIsDarkTheme] = useState(false)
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -58,6 +67,22 @@ export function NavigationFinal() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [pathname])
+
+  const handleMouseLeave = () => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null)
+    }, 300)
+  }
+
+  const handleMouseEnter = (label?: string) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
+    }
+    if (label) {
+      setActiveDropdown(label)
+    }
+  }
 
   const navItems = [
     {
@@ -140,12 +165,12 @@ export function NavigationFinal() {
             </Link>
 
             <div className="hidden lg:flex items-center justify-center flex-1">
-              <nav className="flex items-center space-x-2" onMouseLeave={() => setActiveDropdown(null)}>
+              <nav className="flex items-center space-x-2" onMouseLeave={handleMouseLeave}>
                 {navItems.map((item) => (
                   <div
                     key={item.label || item.href}
                     className="relative"
-                    onMouseEnter={() => item.dropdown && setActiveDropdown(item.label)}
+                    onMouseEnter={() => handleMouseEnter(item.dropdown ? item.label : undefined)}
                   >
                     {item.href ? (
                       <Link
@@ -170,7 +195,11 @@ export function NavigationFinal() {
                     )}
 
                     {item.dropdown && activeDropdown === item.label && (
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+                        onMouseEnter={() => handleMouseEnter()}
+                        onMouseLeave={handleMouseLeave}
+                      >
                         <div className="p-2">
                           {item.dropdown.map((subItem) => (
                             <Link
