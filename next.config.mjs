@@ -16,6 +16,13 @@ const nextConfig = {
       { protocol: "https", hostname: "fairsports-website.blob.vercel-storage.com" },
     ],
   },
+  swcMinify: false,
+  compiler: {
+    removeConsole: false,
+  },
+  experimental: {
+    optimizeCss: false,
+  },
 }
 
 export default nextConfig
