@@ -7,13 +7,15 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./lib/**/*.{js,ts,jsx,tsx,mdx}",
-    "./**/*.{js,ts,jsx,tsx,mdx}", // Catch-all pattern
+    "*.{js,ts,jsx,tsx,mdx}", // Catch-all pattern
   ],
   safelist: [
     {
-      pattern: /./, // Keep all classes
+      pattern: /.*/, // Keep absolutely everything
     },
   ],
+  // @ts-ignore - Force disable purge
+  purge: false,
   theme: {
     container: {
       center: true,
