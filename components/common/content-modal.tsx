@@ -76,7 +76,7 @@ export function ContentModal({ isOpen, onClose, person, type, bodyHTML }: Conten
               transition={{ duration: 0.2, ease: "easeOut" }}
               className="flex flex-col lg:flex-row gap-8 lg:gap-12 p-6 lg:p-8"
             >
-              <div className="flex-shrink-0 lg:w-96">
+              <div className="flex-shrink-0 lg:w-80">
                 <div className="relative">
                   <div className="relative w-full aspect-[4/5]">
                     <img
