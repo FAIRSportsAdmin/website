@@ -106,7 +106,7 @@ async function getPageContentWithChildren(pageId: string): Promise<any[]> {
 
     return allBlocks
   } catch (error: any) {
-    console.error("[v0] Failed to fetch page content:", {
+    console.error("Failed to fetch page content:", {
       pageId,
       error: error.message,
       code: error.code,
@@ -132,8 +132,6 @@ const REFRESH_IMAGES = false // Set to true temporarily to refresh all images fr
 export const getNeutralsData = cached(
   async function getNeutralsData(): Promise<NotionNeutral[]> {
     try {
-      console.log("[v0] Starting to fetch neutrals data...")
-
       const dataSourceId = await getResolvedDataSourceId(
         DATABASES.NEUTRALS,
         process.env.NEUTRALS_DATA_SOURCE_ID,
@@ -141,8 +139,6 @@ export const getNeutralsData = cached(
       )
 
       const response = await queryDataSource(dataSourceId)
-
-      console.log(`[v0] Got ${response.results?.length || 0} neutrals from Notion`)
 
       const neutrals = await Promise.all(
         response.results.map(async (page: any) => {
@@ -179,10 +175,9 @@ export const getNeutralsData = cached(
         return getLastName(a.title).localeCompare(getLastName(b.title))
       })
 
-      console.log(`[v0] Successfully processed ${sortedNeutrals.length} neutrals`)
       return sortedNeutrals
     } catch (error: any) {
-      console.error("[v0] Failed to fetch neutrals data:", {
+      console.error("Failed to fetch neutrals data:", {
         message: error.message,
         code: error.code,
         status: error.status,
@@ -242,7 +237,7 @@ export const getAdvisorsData = cached(
         return getLastName(a.title).localeCompare(getLastName(b.title))
       })
     } catch (error: any) {
-      console.error("[v0] Failed to fetch advisors data:", {
+      console.error("Failed to fetch advisors data:", {
         message: error.message,
         code: error.code,
         status: error.status,
@@ -277,7 +272,7 @@ export const getBlogPostsData = cached(
         tags: page.properties.tags?.multi_select?.map((tag: any) => tag.name) || [],
       }))
     } catch (error: any) {
-      console.error("[v0] Failed to fetch blog posts data:", {
+      console.error("Failed to fetch blog posts data:", {
         message: error.message,
         code: error.code,
         status: error.status,
@@ -323,7 +318,7 @@ export const getBlogPostBySlug = (slug: string) =>
           body: await getPageContent(page.id),
         }
       } catch (error) {
-        console.error("[v0] Failed to fetch blog post by slug:", slug, error)
+        console.error("Failed to fetch blog post by slug:", slug, error)
         return null
       }
     },
@@ -373,7 +368,7 @@ export const getAdvisorBySlug = (slug: string) =>
           body: await getPageContent(page.id),
         }
       } catch (error) {
-        console.error("[v0] Failed to fetch advisor by slug:", slug, error)
+        console.error("Failed to fetch advisor by slug:", slug, error)
         return null
       }
     },
@@ -422,7 +417,7 @@ export const getNeutralBySlug = (slug: string) =>
           body: await getPageContent(page.id),
         }
       } catch (error) {
-        console.error("[v0] Failed to fetch neutral by slug:", slug, error)
+        console.error("Failed to fetch neutral by slug:", slug, error)
         return null
       }
     },
@@ -436,7 +431,7 @@ export const getRulesPageContent = cached(
       const blocks = await getPageContentWithChildren(PAGES.ARBITRATION_RULES)
       return blocks
     } catch (error: any) {
-      console.error("[v0] Failed to fetch rules content:", error.message)
+      console.error("Failed to fetch rules content:", error.message)
       throw error
     }
   },
@@ -485,7 +480,7 @@ export const getOmbudsBySlug = (slug: string) =>
           body: await getPageContent(page.id),
         }
       } catch (error) {
-        console.error("[v0] Failed to fetch ombud by slug:", slug, error)
+        console.error("Failed to fetch ombud by slug:", slug, error)
         return null
       }
     },
@@ -496,8 +491,6 @@ export const getOmbudsBySlug = (slug: string) =>
 export const getOmbudsData = cached(
   async function getOmbudsData(): Promise<NotionNeutral[]> {
     try {
-      console.log("[v0] Starting to fetch ombuds data...")
-
       const dataSourceId = await getResolvedDataSourceId(
         DATABASES.NEUTRALS, // Assuming ombuds use the same database structure as neutrals
         process.env.OMBUDS_DATA_SOURCE_ID,
@@ -506,8 +499,6 @@ export const getOmbudsData = cached(
 
       const response = await queryDataSource(dataSourceId)
 
-      console.log(`[v0] Got ${response.results?.length || 0} ombuds from Notion`)
-
       const ombuds = await Promise.all(
         response.results.map(async (page: any) => {
           const originalSlug = getPlainText(page.properties.slug?.rich_text)
@@ -515,20 +506,13 @@ export const getOmbudsData = cached(
 
           const finalSlug = originalSlug || generateSlugFromName(name)
 
-          console.log("[v0] Processing ombud page:", {
-            id: page.id,
-            properties: Object.keys(page.properties || {}),
-            originalSlug,
-            finalSlug,
-            name,
-          })
+          const photoFiles = page.properties.photo?.files
+          const photoUrl = getFileUrl(photoFiles) || "/placeholder.svg?height=400&width=320&text=No+Image"
 
-          const photoUrl =
-            getFileUrl(page.properties.photo?.files) || "/placeholder.svg?height=400&width=320&text=No+Image"
           const canonicalPhoto = await getCanonicalImageUrl(
             {
               photo: photoUrl,
-              slug: finalSlug, // Use generated slug for image processing
+              slug: finalSlug,
               id: page.id,
               title: name,
             },
@@ -537,29 +521,29 @@ export const getOmbudsData = cached(
 
           const pageBody = await getPageContent(page.id)
 
+          console.log("[v0] Ombud processed:", {
+            name,
+            photoUrl: canonicalPhoto,
+            hasPhoto: !!canonicalPhoto && canonicalPhoto.includes("blob.vercel-storage.com"),
+          })
+
           return {
             id: page.id,
-            slug: finalSlug, // Use generated slug instead of original
+            slug: finalSlug,
             title: name,
             photo: canonicalPhoto,
-            short_bio: "", // Not using properties since they're empty
-            full_bio: "", // Not using properties since they're empty
-            tags: ["Ombud"], // Force "Ombud" tag instead of using Notion tags
+            short_bio: "",
+            full_bio: "",
+            tags: ["Ombud"],
             order: page.properties.order?.number || 999,
             body: pageBody,
           }
         }),
       )
 
-      console.log(
-        "[v0] Final processed ombuds:",
-        ombuds.map((o) => ({ title: o.title, slug: o.slug, hasBody: !!o.body?.length })),
-      )
-
-      console.log(`[v0] Successfully processed ${ombuds.length} ombuds`)
       return ombuds
     } catch (error: any) {
-      console.error("[v0] Failed to fetch ombuds data:", {
+      console.error("Failed to fetch ombuds data:", {
         message: error.message,
         code: error.code,
         status: error.status,
@@ -569,7 +553,7 @@ export const getOmbudsData = cached(
     }
   },
   ["ombuds:list"],
-  { tags: ["ombuds"], revalidate: 3600 },
+  { tags: ["ombuds"], revalidate: 0 },
 )
 
 export const getNeutrals = getNeutralsData

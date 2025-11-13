@@ -74,10 +74,7 @@ export async function ingestImage(
           return { success: true, canonicalUrl: existingBlob.url }
         }
       } catch (error) {
-        console.warn(
-          `Blob head check failed for ${filename}:`,
-          error instanceof Error ? error.message : "Unknown error",
-        )
+        // No existing blob found, will create new one
       }
     }
 
@@ -95,13 +92,13 @@ export async function ingestImage(
     } catch (error) {
       // Handle Vercel Blob API errors, including JSON parsing issues
       const errorMessage = error instanceof Error ? error.message : "Unknown error"
-      console.error(`[SERVER] Blob upload failed for ${filename}:`, errorMessage)
+      console.error(`Blob upload failed for ${filename}:`, errorMessage)
 
       // If it's a JSON parsing error or rate limit, fall back to placeholder
       return { success: false, error: errorMessage }
     }
   } catch (error) {
-    console.error("[SERVER] Image ingestion failed:", error)
+    console.error("Image ingestion failed:", error)
     return { success: false, error: error instanceof Error ? error.message : "Unknown error" }
   }
 }
@@ -118,6 +115,7 @@ export async function getCanonicalImageUrl(person: any, forceRefresh = false): P
 
   // Try to ingest the image
   const personId = person.slug || person.id || person.title.replace(/\s+/g, "-").toLowerCase()
+
   const result = await ingestImage(person.photo, personId, forceRefresh)
 
   if (result.success && result.canonicalUrl) {
