@@ -17,7 +17,7 @@ export default function MediationPage() {
   const data = solutionsContent.mediation
 
   return (
-    <div className="py-[var(--section-y-padding)] bg-gray-50">
+    <div className="py-[var(--section-y-padding)] bg-gray-50 overflow-x-hidden">
       <div className="max-w-[var(--container-max-width)] mx-auto px-6 md:px-8">
         {/* Hero */}
         <section className="text-center">

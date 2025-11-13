@@ -93,7 +93,7 @@ export const solutionsContent: Record<"negotiation" | "mediation" | "arbitration
         {
           name: "Agreement to Mediate",
           iconKey: "HelpingHand",
-          description: "Parties agree to mediate and submit the matter to FAIR",
+          description: "Parties agree to mediate and submit the matter to FAIR.", // Added period at end
         },
         {
           name: "Mediator Selection",

@@ -30,7 +30,13 @@ export const metadata = createMetadata({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable, fontHeading.variable)}>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased overflow-x-hidden",
+          fontSans.variable,
+          fontHeading.variable,
+        )}
+      >
         <Script id="version-log" strategy="afterInteractive">
           {`console.log("%c🚀 FAIR Sports - Latest Version from v0 Chat", "background: #0066ff; color: white; padding: 8px 16px; font-size: 14px; font-weight: bold; border-radius: 4px;");
           console.log("%cNav Hover Fix + Advisor Preview Text Added", "color: #0066ff; font-size: 12px;");`}

@@ -62,7 +62,7 @@ const solutionsData = [
       {
         name: "Agreement to Mediate",
         icon: HelpingHand,
-        description: "Parties agree to mediate and submit the matter to FAIR", // Updated tooltip to match exact user specification
+        description: "Parties agree to mediate and submit the matter to FAIR.", // Added period at end
       },
       {
         name: "Mediator Selection",

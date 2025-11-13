@@ -13,13 +13,17 @@ export function ProcessDiagramFallback({ steps }: { steps: Step[] }) {
   if (!Array.isArray(steps) || steps.length === 0) return null
 
   return (
-    <div className="relative flex justify-between items-start pt-16" role="list" aria-label="Process steps">
+    <div
+      className="relative flex flex-col md:flex-row md:justify-between md:items-start items-center gap-8 md:gap-0 pt-16 px-4"
+      role="list"
+      aria-label="Process steps"
+    >
       <div
-        className="absolute top-8 left-0 w-full h-1 bg-gradient-to-r from-[#63CBFD] via-[#63CBFD] to-[#63CBFD] rounded-full opacity-40"
+        className="hidden md:block absolute top-8 left-0 w-full h-1 bg-gradient-to-r from-[#63CBFD] via-[#63CBFD] to-[#63CBFD] rounded-full opacity-40"
         aria-hidden="true"
       />
       <motion.div
-        className="absolute top-8 left-0 h-1 bg-gradient-to-r from-[#63CBFD] via-[#63CBFD] to-[#63CBFD] rounded-full"
+        className="hidden md:block absolute top-8 left-0 h-1 bg-gradient-to-r from-[#63CBFD] via-[#63CBFD] to-[#63CBFD] rounded-full"
         initial={{ width: "0%" }}
         whileInView={{ width: "100%" }}
         viewport={{ once: true, amount: 0.4 }}
@@ -31,8 +35,8 @@ export function ProcessDiagramFallback({ steps }: { steps: Step[] }) {
         return (
           <div
             key={`${step.name}-${i}`}
-            className="group relative flex flex-col items-center text-center focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 rounded-lg"
-            style={{ flex: 1 }}
+            className="group relative flex flex-col items-center text-center focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 rounded-lg w-full md:w-auto"
+            style={{ flex: "0 1 auto" }}
             role="listitem"
             tabIndex={0}
             aria-label={`${step.name}${step.description ? `. ${step.description}` : ""}`}
@@ -54,10 +58,10 @@ export function ProcessDiagramFallback({ steps }: { steps: Step[] }) {
                 {i + 1}
               </div>
             </div>
-            <p className="mt-4 text-sm font-semibold text-gray-900 leading-tight px-2">{step.name}</p>
+            <p className="mt-4 text-sm font-semibold text-gray-900 leading-tight px-2 max-w-[200px]">{step.name}</p>
             {step.description ? (
               <div
-                className="absolute bottom-full mb-3 w-56 p-3 bg-gray-900 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"
+                className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-56 max-w-[calc(100vw-2rem)] p-3 bg-gray-900 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none z-50"
                 role="tooltip"
                 aria-hidden="true"
               >
