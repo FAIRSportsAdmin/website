@@ -82,9 +82,6 @@ function AnimatedBackground() {
   const reduce = useReducedMotion()
   if (reduce) return null
 
-  const windowWidth = typeof window !== "undefined" ? window.innerWidth : 1200
-  const windowHeight = typeof window !== "undefined" ? window.innerHeight : 800
-
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {[...Array(12)].map((_, i) => (
@@ -92,13 +89,13 @@ function AnimatedBackground() {
           key={i}
           className="absolute w-1 h-1 bg-white/20 rounded-full"
           initial={{
-            x: Math.random() * windowWidth,
-            y: Math.random() * windowHeight,
+            x: typeof window !== "undefined" ? Math.random() * window.innerWidth : 0,
+            y: typeof window !== "undefined" ? Math.random() * window.innerHeight : 0,
             opacity: 0,
           }}
           animate={{
-            x: Math.random() * windowWidth,
-            y: Math.random() * windowHeight,
+            x: typeof window !== "undefined" ? Math.random() * window.innerWidth : 0,
+            y: typeof window !== "undefined" ? Math.random() * window.innerHeight : 0,
             opacity: [0, 0.6, 0],
           }}
           transition={{
@@ -151,12 +148,7 @@ export function HeroFinal() {
             </h1>
           </m.div>
 
-          <m.div
-            initial={reduce ? undefined : { opacity: 0, y: 30 }}
-            animate={reduce ? undefined : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.16, delay: 0.44, ease: "easeOut" }}
-            className="mt-8"
-          >
+          <div className="mt-8">
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <Button
                 asChild
@@ -174,7 +166,7 @@ export function HeroFinal() {
                 <Link href="/submit-case">Start Your Case</Link>
               </Button>
             </div>
-          </m.div>
+          </div>
 
           <m.div
             initial={reduce ? undefined : { opacity: 0 }}
