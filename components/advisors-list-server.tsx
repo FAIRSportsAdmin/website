@@ -8,7 +8,7 @@ export default async function AdvisorsListServer() {
 
   const advisorsWithHTML = advisors.map((advisor) => {
     const bodyHTML = advisor.body?.length ? renderNotionBlocks(advisor.body) : ""
-    const tags = advisor.title.includes("George Pyne") ? [...(advisor.tags || []), "Investor"] : advisor.tags
+    const tags = advisor.title.includes("George Pyne") ? [...(advisor.tags || []), "Investor Only"] : advisor.tags
 
     return { ...advisor, bodyHTML, tags }
   })

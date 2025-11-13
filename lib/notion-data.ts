@@ -252,7 +252,7 @@ export const getAdvisorsData = cached(
     }
   },
   ["advisors:list"],
-  { tags: ["advisors"], revalidate: 3600 },
+  { tags: ["advisors"], revalidate: 60 },
 )
 
 export const getBlogPostsData = cached(
@@ -378,7 +378,7 @@ export const getAdvisorBySlug = (slug: string) =>
       }
     },
     ["advisors:by-slug", slug],
-    { tags: ["advisors"], revalidate: 3600 },
+    { tags: ["advisors"], revalidate: 60 },
   )()
 
 export const getNeutralBySlug = (slug: string) =>

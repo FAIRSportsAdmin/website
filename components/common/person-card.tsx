@@ -127,13 +127,14 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
                       key={tag}
                       variant="secondary"
                       className={`
-                        text-xs font-medium border-0 px-3 py-1.5 rounded-full shadow-sm
+                        text-xs border-0 px-3 py-1.5 rounded-full shadow-sm
                         ${
                           index === 0
                             ? "bg-gradient-to-r from-sky/20 to-accord/20 text-navy"
                             : "bg-gradient-to-r from-navy/10 to-ink/10 text-navy"
                         }
                         hover:shadow-md transition-shadow duration-100
+                        ${tag === "Investor Only" ? "font-bold" : "font-medium"}
                       `}
                     >
                       {tag}

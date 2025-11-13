@@ -6,7 +6,12 @@ const getBaseUrl = () => {
     return process.env.NEXT_PUBLIC_BASE_URL
   }
 
-  // In production, try to infer from Vercel
+  // This ensures URLs are always copied as fairsports.org
+  if (process.env.VERCEL_ENV === "production") {
+    return "https://fairsports.org"
+  }
+
+  // In preview/development, try to infer from Vercel
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`
   }
