@@ -1,21 +1,20 @@
 import type { Config } from "tailwindcss"
 
 const config: Config = {
+  mode: "jit", // Force JIT mode explicitly
   darkMode: ["class"],
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./lib/**/*.{js,ts,jsx,tsx,mdx}",
-    "*.{js,ts,jsx,tsx,mdx}", // Catch-all pattern
-  ],
-  safelist: [
-    {
-      pattern: /.*/, // Keep absolutely everything
+  content: {
+    files: [
+      "./**/*.{js,ts,jsx,tsx,mdx}",
+      "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+      "./components/**/*.{js,ts,jsx,tsx,mdx}",
+      "./app/**/*.{js,ts,jsx,tsx,mdx}",
+      "./lib/**/*.{js,ts,jsx,tsx,mdx}",
+    ],
+    extract: {
+      DEFAULT: (content: string) => content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [],
     },
-  ],
-  // @ts-ignore - Force disable purge
-  purge: false,
+  },
   theme: {
     container: {
       center: true,
