@@ -127,6 +127,8 @@ function generateSlugFromName(name: string): string {
 }
 
 // ───────────── Cached queries (server side) ──────────────
+const REFRESH_IMAGES = false // Set to true temporarily to refresh all images from Notion
+
 export const getNeutralsData = cached(
   async function getNeutralsData(): Promise<NotionNeutral[]> {
     try {
@@ -146,12 +148,15 @@ export const getNeutralsData = cached(
         response.results.map(async (page: any) => {
           const photoUrl =
             getFileUrl(page.properties.photo?.files) || "/placeholder.svg?height=400&width=320&text=No+Image"
-          const canonicalPhoto = await getCanonicalImageUrl({
-            photo: photoUrl,
-            slug: getPlainText(page.properties.slug?.rich_text),
-            id: page.id,
-            title: getPlainText(page.properties.Name?.title),
-          })
+          const canonicalPhoto = await getCanonicalImageUrl(
+            {
+              photo: photoUrl,
+              slug: getPlainText(page.properties.slug?.rich_text),
+              id: page.id,
+              title: getPlainText(page.properties.Name?.title),
+            },
+            REFRESH_IMAGES,
+          )
 
           const pageBody = await getPageContent(page.id)
 
@@ -205,12 +210,15 @@ export const getAdvisorsData = cached(
         response.results.map(async (page: any) => {
           const photoUrl =
             getFileUrl(page.properties.photo?.files) || "/placeholder.svg?height=400&width=320&text=No+Image"
-          const canonicalPhoto = await getCanonicalImageUrl({
-            photo: photoUrl,
-            slug: getPlainText(page.properties.slug?.rich_text),
-            id: page.id,
-            title: getPlainText(page.properties.Name?.title),
-          })
+          const canonicalPhoto = await getCanonicalImageUrl(
+            {
+              photo: photoUrl,
+              slug: getPlainText(page.properties.slug?.rich_text),
+              id: page.id,
+              title: getPlainText(page.properties.Name?.title),
+            },
+            REFRESH_IMAGES,
+          )
 
           const pageBody = await getPageContent(page.id)
 
@@ -223,8 +231,8 @@ export const getAdvisorsData = cached(
             bio: getPlainText(page.properties.bio?.rich_text),
             short_bio: getPlainText(page.properties["short bio"]?.rich_text),
             order: page.properties.order?.number || 999,
-            tags: page.properties.tags?.multi_select?.map((t: any) => t.name) || [], // Added tags field to fetch multi-select tags from Notion
-            body: pageBody, // Include body in the list query
+            tags: page.properties.tags?.multi_select?.map((t: any) => t.name) || [],
+            body: pageBody,
           }
         }),
       )
@@ -342,12 +350,15 @@ export const getAdvisorBySlug = (slug: string) =>
 
         const photoUrl =
           getFileUrl(page.properties.photo?.files) || "/placeholder.svg?height=400&width=320&text=No+Image"
-        const canonicalPhoto = await getCanonicalImageUrl({
-          photo: photoUrl,
-          slug: getPlainText(page.properties.slug?.rich_text),
-          id: page.id,
-          title: getPlainText(page.properties.Name?.title),
-        })
+        const canonicalPhoto = await getCanonicalImageUrl(
+          {
+            photo: photoUrl,
+            slug: getPlainText(page.properties.slug?.rich_text),
+            id: page.id,
+            title: getPlainText(page.properties.Name?.title),
+          },
+          REFRESH_IMAGES,
+        )
 
         return {
           id: page.id,
@@ -358,7 +369,7 @@ export const getAdvisorBySlug = (slug: string) =>
           bio: getPlainText(page.properties.bio?.rich_text),
           short_bio: getPlainText(page.properties["short bio"]?.rich_text),
           order: page.properties.order?.number || 999,
-          tags: page.properties.tags?.multi_select?.map((t: any) => t.name) || [], // Added tags field to fetch multi-select tags from Notion
+          tags: page.properties.tags?.multi_select?.map((t: any) => t.name) || [],
           body: await getPageContent(page.id),
         }
       } catch (error) {
@@ -389,12 +400,15 @@ export const getNeutralBySlug = (slug: string) =>
 
         const photoUrl =
           getFileUrl(page.properties.photo?.files) || "/placeholder.svg?height=400&width=320&text=No+Image"
-        const canonicalPhoto = await getCanonicalImageUrl({
-          photo: photoUrl,
-          slug: getPlainText(page.properties.slug?.rich_text),
-          id: page.id,
-          title: getPlainText(page.properties.Name?.title),
-        })
+        const canonicalPhoto = await getCanonicalImageUrl(
+          {
+            photo: photoUrl,
+            slug: getPlainText(page.properties.slug?.rich_text),
+            id: page.id,
+            title: getPlainText(page.properties.Name?.title),
+          },
+          REFRESH_IMAGES,
+        )
 
         return {
           id: page.id,
@@ -449,12 +463,15 @@ export const getOmbudsBySlug = (slug: string) =>
 
         const photoUrl =
           getFileUrl(page.properties.photo?.files) || "/placeholder.svg?height=400&width=320&text=No+Image"
-        const canonicalPhoto = await getCanonicalImageUrl({
-          photo: photoUrl,
-          slug: getPlainText(page.properties.slug?.rich_text),
-          id: page.id,
-          title: getPlainText(page.properties.Name?.title),
-        })
+        const canonicalPhoto = await getCanonicalImageUrl(
+          {
+            photo: photoUrl,
+            slug: getPlainText(page.properties.slug?.rich_text),
+            id: page.id,
+            title: getPlainText(page.properties.Name?.title),
+          },
+          REFRESH_IMAGES,
+        )
 
         return {
           id: page.id,
@@ -508,12 +525,15 @@ export const getOmbudsData = cached(
 
           const photoUrl =
             getFileUrl(page.properties.photo?.files) || "/placeholder.svg?height=400&width=320&text=No+Image"
-          const canonicalPhoto = await getCanonicalImageUrl({
-            photo: photoUrl,
-            slug: finalSlug, // Use generated slug for image processing
-            id: page.id,
-            title: name,
-          })
+          const canonicalPhoto = await getCanonicalImageUrl(
+            {
+              photo: photoUrl,
+              slug: finalSlug, // Use generated slug for image processing
+              id: page.id,
+              title: name,
+            },
+            REFRESH_IMAGES,
+          )
 
           const pageBody = await getPageContent(page.id)
 
