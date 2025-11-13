@@ -57,7 +57,7 @@ function StatCard({ value, label, Icon }: StatCardProps) {
       <Icon className="w-8 h-8 text-ink/70 mb-4" />
       <div>
         <Counter value={value} className="text-5xl md:text-6xl font-black text-ink tracking-tighter" />
-        <p className="mt-1 text-text-muted font-semibold text-sm leading-tight">{label}</p>
+        <p className="mt-1 text-muted-foreground font-semibold text-sm leading-tight">{label}</p>
       </div>
     </motion.div>
   )
@@ -74,10 +74,10 @@ export function NeutralsExpertise() {
           variants={containerVariants}
           className="text-center max-w-3xl mx-auto"
         >
-          <motion.h2 variants={itemVariants} className="text-3xl md:text-4xl font-black text-text-primary">
+          <motion.h2 variants={itemVariants} className="text-3xl md:text-4xl font-black text-foreground">
             Expertise You Can Trust
           </motion.h2>
-          <motion.p variants={itemVariants} className="mt-4 text-lg text-text-muted">
+          <motion.p variants={itemVariants} className="mt-4 text-lg text-muted-foreground">
             Our panel isn't just experienced—it's definitive. We've assembled the industry's most respected minds in
             sports law, governance, and business to ensure your case is understood with unparalleled depth.
           </motion.p>

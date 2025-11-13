@@ -193,11 +193,11 @@ function SolutionContent({ solution }: { solution: (typeof solutionsData)[0] }) 
             focusable="false"
           />
         </div>
-        <h3 id={`${solution.id}-title`} className="text-3xl font-bold text-text-primary">
+        <h3 id={`${solution.id}-title`} className="text-3xl font-bold text-foreground">
           {solution.title}
         </h3>
       </motion.div>
-      <motion.p variants={itemVariants} className="mt-8 text-xl text-text-muted mb-10 max-w-3xl leading-relaxed">
+      <motion.p variants={itemVariants} className="mt-8 text-xl text-muted-foreground mb-10 max-w-3xl leading-relaxed">
         {getDescription(solution)}
       </motion.p>
 
@@ -245,7 +245,7 @@ function SolutionContent({ solution }: { solution: (typeof solutionsData)[0] }) 
               />
             </motion.div>
 
-            <p className="mt-5 text-base font-semibold text-text-primary leading-tight">{step.name}</p>
+            <p className="mt-5 text-base font-semibold text-foreground leading-tight">{step.name}</p>
 
             <div
               className="absolute bottom-full mb-4 w-52 p-4 bg-ink text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none z-20"
@@ -309,10 +309,10 @@ export function SolutionsRefined() {
             variants={containerVariants}
             className="text-center max-w-3xl mx-auto mb-16"
           >
-            <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-black text-text-primary">
+            <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-black text-foreground">
               The Resolution Roadmap
             </motion.h2>
-            <motion.p variants={itemVariants} className="mt-8 text-xl text-text-muted leading-relaxed">
+            <motion.p variants={itemVariants} className="mt-8 text-xl text-muted-foreground leading-relaxed">
               From confidential dialogue to thoughtful resolutions, our streamlined and structured process ensures every
               dispute receives the expertise and care it deserves.
             </motion.p>
@@ -325,7 +325,7 @@ export function SolutionsRefined() {
                 value={solution.id}
                 className="border-b-0 bg-card-texture rounded-lg shadow-sm mb-8"
               >
-                <AccordionTrigger className="text-xl font-semibold text-text-primary hover:no-underline py-5 px-7">
+                <AccordionTrigger className="text-xl font-semibold text-foreground hover:no-underline py-5 px-7">
                   <div className="flex items-center">
                     <div
                       className="w-10 h-10 flex items-center justify-center rounded-lg mr-4 p-2"
@@ -340,7 +340,7 @@ export function SolutionsRefined() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pt-3 pb-9 px-7">
-                  <p className="text-lg text-text-muted mb-8 leading-relaxed">
+                  <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                     {solution.id === "negotiation"
                       ? "Confidential dialogue facilitated by a trusted intermediary to build common ground and support fair outcomes without formal proceedings."
                       : solution.description}
@@ -381,8 +381,8 @@ export function SolutionsRefined() {
                         </div>
 
                         <div className="ml-10">
-                          <h4 className="font-semibold text-lg text-text-primary mb-2">{step.name}</h4>
-                          <p className="text-base text-text-muted leading-relaxed">{step.description}</p>
+                          <h4 className="font-semibold text-lg text-foreground mb-2">{step.name}</h4>
+                          <p className="text-base text-muted-foreground leading-relaxed">{step.description}</p>
                         </div>
                       </motion.div>
                     ))}
@@ -408,7 +408,7 @@ export function SolutionsRefined() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
-                className="text-4xl font-black text-text-primary"
+                className="text-4xl font-black text-foreground"
               >
                 The Resolution Roadmap
               </motion.h2>
@@ -416,7 +416,7 @@ export function SolutionsRefined() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-                className="mt-8 text-lg text-text-muted leading-relaxed"
+                className="mt-8 text-lg text-muted-foreground leading-relaxed"
               >
                 From confidential dialogue to thoughtful resolutions, our streamlined and structured process ensures
                 every dispute receives the expertise and care it deserves.
@@ -446,7 +446,7 @@ export function SolutionsRefined() {
                     className={`group flex items-center px-5 py-3 rounded-md transition-all duration-200 ${
                       activeSolution === solution.id
                         ? "bg-card-texture shadow-sm"
-                        : "text-text-muted hover:bg-card-texture/50 hover:text-text-primary"
+                        : "text-muted-foreground hover:bg-card-texture/50 hover:text-foreground"
                     }`}
                   >
                     <div

@@ -85,7 +85,7 @@ export function SolutionsFinal() {
           variants={containerVariants}
           className="text-center max-w-3xl mx-auto"
         >
-          <motion.h2 variants={itemVariants} className="text-3xl md:text-4xl font-black text-text-primary">
+          <motion.h2 variants={itemVariants} className="text-3xl md:text-4xl font-black text-foreground">
             A Solution for Every Dispute
           </motion.h2>
           <motion.p variants={itemVariants} className="mt-4 text-lg">
@@ -101,7 +101,7 @@ export function SolutionsFinal() {
                 key={tab.name}
                 onClick={() => setActiveTab(tab)}
                 className={`relative px-4 py-3 text-sm md:text-base font-semibold transition-colors ${
-                  activeTab.name === tab.name ? "text-ink" : "text-text-muted hover:text-ink"
+                  activeTab.name === tab.name ? "text-ink" : "text-muted-foreground hover:text-ink"
                 }`}
               >
                 {tab.name}
@@ -125,8 +125,8 @@ export function SolutionsFinal() {
                   <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-white/80 shadow-md mb-4">
                     <activeTab.Icon className="h-8 w-8 text-ink" />
                   </div>
-                  <h3 className="text-2xl font-bold text-text-primary">{activeTab.title}</h3>
-                  <p className="mt-2 text-text-muted">{activeTab.description}</p>
+                  <h3 className="text-2xl font-bold text-foreground">{activeTab.title}</h3>
+                  <p className="mt-2 text-muted-foreground">{activeTab.description}</p>
                 </div>
 
                 <motion.div
@@ -161,7 +161,7 @@ export function SolutionsFinal() {
                           <step.icon className="w-6 h-6 text-[#63CBFD]" />
                         </div>
                       </div>
-                      <p className="mt-4 text-sm font-semibold text-text-primary">{step.name}</p>
+                      <p className="mt-4 text-sm font-semibold text-foreground leading-tight">{step.name}</p>
                     </motion.div>
                   ))}
                 </motion.div>

@@ -205,7 +205,7 @@ export function NavigationFinal() {
                             <Link
                               key={subItem.href}
                               href={subItem.href}
-                              className="block px-4 py-2 text-sm text-text-primary rounded-md hover:bg-gray-100 transition-colors"
+                              className="block px-4 py-2 text-sm text-foreground rounded-md hover:bg-gray-100 transition-colors"
                               onClick={() => setActiveDropdown(null)}
                             >
                               {subItem.label}
@@ -265,19 +265,19 @@ export function NavigationFinal() {
                   {item.href ? (
                     <Link
                       href={item.href}
-                      className="block py-2 text-lg font-semibold text-text-primary"
+                      className="block py-2 text-lg font-semibold text-foreground"
                       onClick={() => setIsOpen(false)}
                     >
                       {item.label}
                     </Link>
                   ) : (
                     <>
-                      <h3 className="font-bold text-lg text-text-primary pt-4 pb-2">{item.label}</h3>
+                      <h3 className="font-bold text-lg text-foreground pt-4 pb-2">{item.label}</h3>
                       {item.dropdown?.map((subItem) => (
                         <Link
                           key={subItem.href}
                           href={subItem.href}
-                          className="block py-2 text-text-muted hover:text-text-primary"
+                          className="block py-2 text-muted-foreground hover:text-foreground"
                           onClick={() => setIsOpen(false)}
                         >
                           {subItem.label}

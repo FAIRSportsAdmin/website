@@ -36,7 +36,7 @@ export function CtaStripFinal() {
               <div className="w-12 h-12 flex items-center justify-center rounded-md bg-white/80 shadow-sm mb-4">
                 <FileText className="w-6 h-6 text-accent-accord" />
               </div>
-              <h3 className="text-2xl font-bold text-text-primary">Update Your Contracts</h3>
+              <h3 className="text-2xl font-bold text-foreground">Update Your Contracts</h3>
               <p className="mt-2 mb-6 max-w-md">
                 Stay prepared by incorporating FAIR's dispute resolution clauses into your agreements (for free).
               </p>
@@ -54,7 +54,7 @@ export function CtaStripFinal() {
               <div className="w-12 h-12 flex items-center justify-center rounded-md bg-white/80 shadow-sm mb-4">
                 <Edit className="w-6 h-6 text-accent-accord" />
               </div>
-              <h3 className="text-2xl font-bold text-text-primary">Start Your Case</h3>
+              <h3 className="text-2xl font-bold text-foreground">Start Your Case</h3>
               <p className="mt-2 mb-6 max-w-md">
                 Ready to resolve a dispute? Submit your case to our team of experienced neutrals for a fast and fair
                 process.

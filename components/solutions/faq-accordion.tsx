@@ -24,7 +24,7 @@ export function FaqAccordion({ faqs }: FaqAccordionProps) {
           value={`item-${index}`}
           className="bg-white rounded-lg shadow-sm border border-gray-200/80"
         >
-          <AccordionTrigger className="text-left font-semibold text-text-primary px-6 py-4 hover:no-underline text-base">
+          <AccordionTrigger className="text-left font-semibold text-foreground px-6 py-4 hover:no-underline text-base">
             {faq.question}
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-5">

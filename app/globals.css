@@ -42,7 +42,7 @@
   }
 
   body {
-    @apply text-text-primary;
+    @apply text-foreground;
     font-family: var(--font-inter);
     font-display: swap;
     font-size: 1.125rem; /* 18px instead of 17px */
@@ -124,7 +124,7 @@
   }
 
   p {
-    @apply text-text-muted leading-relaxed;
+    @apply text-muted-foreground leading-relaxed;
     line-height: 1.7;
   }
 

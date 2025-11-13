@@ -14,14 +14,14 @@ export default function AboutPage() {
       {/* Using card texture background instead of solid white */}
       <div className="max-w-3xl mx-auto bg-card-texture p-8 md:p-12 rounded-lg shadow-sm border border-gray-200/50">
         <div className="prose prose-lg max-w-none">
-          <h2 className="text-2xl font-bold text-text-primary mb-4">Our Mission</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-4">Our Mission</h2>
           <p>
             FAIR Sports was founded to address the growing need for specialized dispute resolution services in college
             athletics. We provide fast, affordable, and reliable alternatives to traditional litigation, helping
             institutions, athletes, and other stakeholders resolve conflicts while preserving relationships and
             protecting the integrity of collegiate sports.
           </p>
-          <h2 className="text-2xl font-bold text-text-primary mb-4 mt-8">Our History</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-4 mt-8">Our History</h2>
           <p>
             Established by leading experts in sports law and alternative dispute resolution, FAIR Sports emerged from
             the recognition that college athletics needed specialized arbitration and mediation services. Our founders

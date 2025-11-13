@@ -551,18 +551,13 @@ export const getOmbudsData = cached(
         }),
       )
 
-      const sortedOmbuds = ombuds.sort((a, b) => {
-        const getLastName = (name: string) => name.split(" ").pop() || name
-        return getLastName(a.title).localeCompare(getLastName(b.title))
-      })
-
       console.log(
         "[v0] Final processed ombuds:",
-        sortedOmbuds.map((o) => ({ title: o.title, slug: o.slug, hasBody: !!o.body?.length })),
+        ombuds.map((o) => ({ title: o.title, slug: o.slug, hasBody: !!o.body?.length })),
       )
 
-      console.log(`[v0] Successfully processed ${sortedOmbuds.length} ombuds`)
-      return sortedOmbuds
+      console.log(`[v0] Successfully processed ${ombuds.length} ombuds`)
+      return ombuds
     } catch (error: any) {
       console.error("[v0] Failed to fetch ombuds data:", {
         message: error.message,
