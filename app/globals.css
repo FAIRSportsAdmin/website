@@ -28,6 +28,9 @@
   --input: 220 13% 91%;
   --ring: 224 76% 48%;
   --radius: 0.5rem;
+  /* Added font CSS variables */
+  --font-sans: "Inter", sans-serif;
+  --font-heading: "Archivo", sans-serif;
   --font-archivo: "Archivo", sans-serif;
   --font-inter: "Inter", sans-serif;
   --container-max-width: 80rem; /* 1280px */
@@ -75,13 +78,16 @@
     z-index: -1;
   }
 
+  /* Replace @apply font-heading with direct CSS font-family property */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    @apply font-heading font-bold tracking-tight;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: -0.025em;
   }
 
   h1 {
