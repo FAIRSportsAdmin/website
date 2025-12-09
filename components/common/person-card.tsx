@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
 import { motion } from "framer-motion"
 import { ContentModal } from "./content-modal"
@@ -17,7 +17,7 @@ interface PersonCardProps {
 
 export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(true)
   const [imageError, setImageError] = useState(false)
 
   const isNeutral = type === "neutral"
@@ -37,6 +37,16 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
   }
 
   const imageSrc = getImageSrc()
+
+  useEffect(() => {
+    if (imageSrc && typeof window !== "undefined") {
+      const img = new Image()
+      img.src = imageSrc
+      if (img.complete) {
+        setImageLoaded(true)
+      }
+    }
+  }, [imageSrc])
 
   const handleImageError = () => {
     setImageError(true)
@@ -72,10 +82,6 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-accord via-sky to-navy opacity-60 group-hover:opacity-100 transition-opacity duration-100" />
 
           <div className="h-80 relative bg-gradient-to-br from-gray-100 to-gray-50 overflow-hidden flex-shrink-0">
-            {imageSrc && !imageLoaded && !imageError && (
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-50 animate-pulse" />
-            )}
-
             {(!imageSrc || imageError) && (
               <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-100 flex items-center justify-center">
                 <div className="text-center text-gray-400">
@@ -89,9 +95,7 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
               <img
                 src={imageSrc || "/placeholder.svg"}
                 alt={person.title}
-                className={`absolute inset-0 w-full h-full object-cover group-hover:scale-102 transition-transform duration-100 ease-out ${
-                  imageLoaded ? "opacity-100" : "opacity-0"
-                }`}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-102 transition-transform duration-100 ease-out"
                 onLoad={handleImageLoad}
                 onError={handleImageError}
                 loading={index < 6 ? "eager" : "lazy"}

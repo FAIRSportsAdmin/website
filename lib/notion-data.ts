@@ -127,7 +127,7 @@ function generateSlugFromName(name: string): string {
 }
 
 // ───────────── Cached queries (server side) ──────────────
-const REFRESH_IMAGES = false // Set to true temporarily to refresh all images from Notion
+const REFRESH_IMAGES = true // Temporarily force re-ingestion of all images from Notion to fix expired URLs
 
 export const getNeutralsData = cached(
   async function getNeutralsData(): Promise<NotionNeutral[]> {
@@ -187,7 +187,7 @@ export const getNeutralsData = cached(
     }
   },
   ["neutrals:list"],
-  { tags: ["neutrals"], revalidate: 3600 },
+  { tags: ["neutrals"], revalidate: 60 }, // Reduced from 3600 to 60 seconds to match other pages
 )
 
 export const getAdvisorsData = cached(
@@ -281,7 +281,7 @@ export const getBlogPostsData = cached(
     }
   },
   ["blog:list"],
-  { tags: ["blog"], revalidate: 3600 },
+  { tags: ["blog"], revalidate: 60 }, // Reduced from 3600 to 60 seconds for consistency
 )
 
 export const getBlogPostBySlug = (slug: string) =>
@@ -323,7 +323,7 @@ export const getBlogPostBySlug = (slug: string) =>
       }
     },
     ["blog:by-slug", slug],
-    { tags: ["blog"], revalidate: 3600 },
+    { tags: ["blog"], revalidate: 60 }, // Reduced from 3600 to 60 seconds for consistency
   )()
 
 export const getAdvisorBySlug = (slug: string) =>
@@ -422,7 +422,7 @@ export const getNeutralBySlug = (slug: string) =>
       }
     },
     ["neutrals:by-slug", slug],
-    { tags: ["neutrals"], revalidate: 3600 },
+    { tags: ["neutrals"], revalidate: 60 }, // Reduced from 3600 to 60 seconds for consistency
   )()
 
 export const getRulesPageContent = cached(
@@ -436,7 +436,7 @@ export const getRulesPageContent = cached(
     }
   },
   ["rules:content"],
-  { tags: ["rules"], revalidate: 86400 },
+  { tags: ["rules"], revalidate: 3600 }, // Keeping at 1 hour since rules don't change often
 )
 
 export const getOmbudsBySlug = (slug: string) =>

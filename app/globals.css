@@ -147,9 +147,9 @@
     }
   }
 
-  /* Focus styles */
+  /* Fixed invalid ring-accent-accord class to use ring (semantic design token) */
   *:focus-visible {
-    @apply outline-none ring-2 ring-accent-accord ring-offset-2 ring-offset-background;
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
 
   /* Smooth scrolling */
@@ -514,7 +514,7 @@
 
   /* Enhanced focus styles */
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-accord focus:ring-offset-2;
+    @apply focus:outline-none focus:ring-accord focus:ring-offset-2;
   }
 
   /* Hero background gradient */
