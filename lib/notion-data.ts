@@ -127,7 +127,7 @@ function generateSlugFromName(name: string): string {
 }
 
 // ───────────── Cached queries (server side) ──────────────
-const REFRESH_IMAGES = true // Temporarily force re-ingestion of all images from Notion to fix expired URLs
+const REFRESH_IMAGES = false // Set REFRESH_IMAGES back to false now that blob ingestion is confirmed working
 
 export const getNeutralsData = cached(
   async function getNeutralsData(): Promise<NotionNeutral[]> {
