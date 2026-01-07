@@ -25,7 +25,21 @@ export async function ingestImage(
     // Generate stable blob key
     const slug = personId.toLowerCase().replace(/[^a-z0-9-]/g, "-")
 
-    let response: Response
+    if (!forceRefresh) {
+      try {
+        const existingBlob = await head(`people/${slug}.jpg`)
+        if (existingBlob?.url) {
+          return { success: true, canonicalUrl: existingBlob.url }
+        }
+      } catch (error: any) {
+        // 404 means blob doesn't exist, which is expected for new entries
+        if (error.statusCode !== 404) {
+          console.error(`Error checking blob existence for ${personId}:`, error.message)
+        }
+      }
+    }
+
+    let response: Response | undefined
     let retries = 2
 
     while (retries > 0) {
@@ -34,15 +48,19 @@ export async function ingestImage(
           headers: {
             "User-Agent": "FAIR-Sports-Bot/1.0",
           },
-          signal: AbortSignal.timeout(10000), // 10 second timeout
+          signal: AbortSignal.timeout(10000),
         })
 
-        if (response.ok) break
+        if (response.ok) {
+          break
+        }
+
+        console.error(`Notion fetch failed for ${personId}: ${response.status} ${response.statusText}`)
 
         if (response.status === 403 || response.status >= 500) {
           retries--
           if (retries > 0) {
-            await new Promise((resolve) => setTimeout(resolve, 1000)) // 1 second delay
+            await new Promise((resolve) => setTimeout(resolve, 1000))
             continue
           }
         }
@@ -50,6 +68,7 @@ export async function ingestImage(
         return { success: false, error: `Failed to fetch image: ${response.status}` }
       } catch (error) {
         retries--
+        console.error(`Network error fetching ${personId}:`, error)
         if (retries === 0) {
           return { success: false, error: `Network error: ${error instanceof Error ? error.message : "Unknown error"}` }
         }
@@ -57,48 +76,38 @@ export async function ingestImage(
       }
     }
 
-    const contentType = response!.headers.get("content-type") || "image/jpeg"
+    if (!response) {
+      return { success: false, error: "Failed to fetch image after retries" }
+    }
+
+    const contentType = response.headers.get("content-type") || "image/jpeg"
 
     // Validate it's actually an image
     if (!contentType.startsWith("image/")) {
+      console.error(`Invalid content type for ${personId}: ${contentType}`)
       return { success: false, error: `Invalid content type: ${contentType}` }
     }
 
     const extension = contentType.includes("png") ? "png" : contentType.includes("webp") ? "webp" : "jpg"
     const filename = `people/${slug}.${extension}`
 
-    if (!forceRefresh) {
-      try {
-        const existingBlob = await head(filename)
-        if (existingBlob) {
-          return { success: true, canonicalUrl: existingBlob.url }
-        }
-      } catch (error) {
-        // No existing blob found, will create new one
-      }
-    }
-
-    const imageBuffer = await response!.arrayBuffer()
+    const imageBuffer = await response.arrayBuffer()
 
     try {
       const blob = await put(filename, imageBuffer, {
         access: "public",
         contentType,
         cacheControl: "public, max-age=31536000, immutable",
-        addRandomSuffix: true, // Always add random suffix to avoid conflicts
       })
 
       return { success: true, canonicalUrl: blob.url }
     } catch (error) {
-      // Handle Vercel Blob API errors, including JSON parsing issues
       const errorMessage = error instanceof Error ? error.message : "Unknown error"
       console.error(`Blob upload failed for ${filename}:`, errorMessage)
-
-      // If it's a JSON parsing error or rate limit, fall back to placeholder
       return { success: false, error: errorMessage }
     }
   } catch (error) {
-    console.error("Image ingestion failed:", error)
+    console.error(`Image ingestion failed for ${personId}:`, error)
     return { success: false, error: error instanceof Error ? error.message : "Unknown error" }
   }
 }
@@ -122,5 +131,6 @@ export async function getCanonicalImageUrl(person: any, forceRefresh = false): P
     return result.canonicalUrl
   }
 
+  console.error(`Failed to get canonical image for ${personId}: ${result.error}`)
   return "/placeholder.svg?height=320&width=320&text=Photo+Unavailable"
 }
