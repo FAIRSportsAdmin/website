@@ -1,4 +1,5 @@
 import { put, head } from "@vercel/blob"
+import { AbortSignal } from "abort-controller"
 
 export interface ImageIngestionResult {
   success: boolean
@@ -12,23 +13,32 @@ export async function ingestImage(
   forceRefresh = false,
 ): Promise<ImageIngestionResult> {
   try {
+    const isJoshGordon = personId.toLowerCase().includes("josh") || personId.toLowerCase().includes("gordon")
+    if (isJoshGordon) {
+      console.log("[v0] Processing Josh Gordon image:", { notionUrl, personId, forceRefresh })
+    }
+
     // Skip if already a canonical URL
     if (notionUrl.includes("blob.vercel-storage.com")) {
+      if (isJoshGordon) console.log("[v0] Josh Gordon: Already has blob URL")
       return { success: true, canonicalUrl: notionUrl }
     }
 
     // Skip if it's a placeholder URL
     if (notionUrl.includes("placeholder.svg")) {
+      if (isJoshGordon) console.log("[v0] Josh Gordon: Has placeholder URL")
       return { success: true, canonicalUrl: notionUrl }
     }
 
     // Generate stable blob key
     const slug = personId.toLowerCase().replace(/[^a-z0-9-]/g, "-")
+    if (isJoshGordon) console.log("[v0] Josh Gordon slug:", slug)
 
     if (!forceRefresh) {
       try {
         const existingBlob = await head(`people/${slug}.jpg`)
         if (existingBlob?.url) {
+          if (isJoshGordon) console.log("[v0] Josh Gordon: Found existing blob:", existingBlob.url)
           return { success: true, canonicalUrl: existingBlob.url }
         }
       } catch (error: any) {
@@ -36,6 +46,7 @@ export async function ingestImage(
         if (error.statusCode !== 404) {
           console.error(`Error checking blob existence for ${personId}:`, error.message)
         }
+        if (isJoshGordon) console.log("[v0] Josh Gordon: Blob doesn't exist (404), will upload")
       }
     }
 
@@ -44,6 +55,7 @@ export async function ingestImage(
 
     while (retries > 0) {
       try {
+        if (isJoshGordon) console.log("[v0] Josh Gordon: Fetching from Notion...")
         response = await fetch(notionUrl, {
           headers: {
             "User-Agent": "FAIR-Sports-Bot/1.0",
@@ -52,6 +64,7 @@ export async function ingestImage(
         })
 
         if (response.ok) {
+          if (isJoshGordon) console.log("[v0] Josh Gordon: Notion fetch successful")
           break
         }
 
@@ -92,14 +105,17 @@ export async function ingestImage(
     const filename = `people/${slug}.${extension}`
 
     const imageBuffer = await response.arrayBuffer()
+    if (isJoshGordon) console.log("[v0] Josh Gordon: Uploading to blob storage:", filename)
 
     try {
       const blob = await put(filename, imageBuffer, {
         access: "public",
         contentType,
         cacheControl: "public, max-age=31536000, immutable",
+        allowOverwrite: true,
       })
 
+      if (isJoshGordon) console.log("[v0] Josh Gordon: Upload successful:", blob.url)
       return { success: true, canonicalUrl: blob.url }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error"
@@ -113,12 +129,23 @@ export async function ingestImage(
 }
 
 export async function getCanonicalImageUrl(person: any, forceRefresh = false): Promise<string> {
+  const isJoshGordon = person.title?.toLowerCase().includes("josh") && person.title?.toLowerCase().includes("gordon")
+  if (isJoshGordon) {
+    console.log("[v0] getCanonicalImageUrl for Josh Gordon:", {
+      photo: person.photo,
+      slug: person.slug,
+      title: person.title,
+    })
+  }
+
   if (!person.photo) {
+    if (isJoshGordon) console.log("[v0] Josh Gordon: No photo field found")
     return "/placeholder.svg?height=320&width=320&text=No+Image"
   }
 
   // If already canonical, return as-is unless forcing refresh
   if (!forceRefresh && (person.photo.includes("blob.vercel-storage.com") || person.photo.startsWith("/"))) {
+    if (isJoshGordon) console.log("[v0] Josh Gordon: Returning existing photo URL")
     return person.photo
   }
 
@@ -128,6 +155,7 @@ export async function getCanonicalImageUrl(person: any, forceRefresh = false): P
   const result = await ingestImage(person.photo, personId, forceRefresh)
 
   if (result.success && result.canonicalUrl) {
+    if (isJoshGordon) console.log("[v0] Josh Gordon: Final canonical URL:", result.canonicalUrl)
     return result.canonicalUrl
   }
 
