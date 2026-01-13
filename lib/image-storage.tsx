@@ -34,20 +34,25 @@ export async function ingestImage(
     const slug = personId.toLowerCase().replace(/[^a-z0-9-]/g, "-")
     if (isJoshGordon) console.log("[v0] Josh Gordon slug:", slug)
 
+    const urlExtension = notionUrl.match(/\.(png|jpg|jpeg|webp|gif)/i)?.[1]?.toLowerCase()
+    const possibleExtensions = urlExtension ? [urlExtension] : ["jpg", "png", "webp"]
+
     if (!forceRefresh) {
-      try {
-        const existingBlob = await head(`people/${slug}.jpg`)
-        if (existingBlob?.url) {
-          if (isJoshGordon) console.log("[v0] Josh Gordon: Found existing blob:", existingBlob.url)
-          return { success: true, canonicalUrl: existingBlob.url }
+      for (const ext of possibleExtensions) {
+        try {
+          const existingBlob = await head(`people/${slug}.${ext}`)
+          if (existingBlob?.url) {
+            if (isJoshGordon) console.log("[v0] Josh Gordon: Found existing blob:", existingBlob.url)
+            return { success: true, canonicalUrl: existingBlob.url }
+          }
+        } catch (error: any) {
+          // Continue to next extension if 404
+          if (error.statusCode !== 404) {
+            console.error(`Error checking blob existence for ${personId}.${ext}:`, error.message)
+          }
         }
-      } catch (error: any) {
-        // 404 means blob doesn't exist, which is expected for new entries
-        if (error.statusCode !== 404) {
-          console.error(`Error checking blob existence for ${personId}:`, error.message)
-        }
-        if (isJoshGordon) console.log("[v0] Josh Gordon: Blob doesn't exist (404), will upload")
       }
+      if (isJoshGordon) console.log("[v0] Josh Gordon: Blob doesn't exist, will upload")
     }
 
     let response: Response | undefined
