@@ -34,25 +34,27 @@ export async function ingestImage(
     const slug = personId.toLowerCase().replace(/[^a-z0-9-]/g, "-")
     if (isJoshGordon) console.log("[v0] Josh Gordon slug:", slug)
 
-    const urlExtension = notionUrl.match(/\.(png|jpg|jpeg|webp|gif)/i)?.[1]?.toLowerCase()
-    const possibleExtensions = urlExtension ? [urlExtension] : ["jpg", "png", "webp"]
-
     if (!forceRefresh) {
-      for (const ext of possibleExtensions) {
+      // Try ALL common extensions, not just URL-based ones
+      const allExtensions = ["jpg", "jpeg", "png", "webp", "gif"]
+
+      for (const ext of allExtensions) {
         try {
           const existingBlob = await head(`people/${slug}.${ext}`)
           if (existingBlob?.url) {
-            if (isJoshGordon) console.log("[v0] Josh Gordon: Found existing blob:", existingBlob.url)
+            console.log(`[v0] Found existing blob for ${personId}: ${existingBlob.url}`)
             return { success: true, canonicalUrl: existingBlob.url }
           }
         } catch (error: any) {
-          // Continue to next extension if 404
-          if (error.statusCode !== 404) {
-            console.error(`Error checking blob existence for ${personId}.${ext}:`, error.message)
+          // 404 is expected when file doesn't exist, continue to next extension
+          if (error.statusCode === 404) {
+            continue
           }
+          // Log other errors but continue checking
+          console.error(`Error checking blob existence for ${personId}.${ext}:`, error.message)
         }
       }
-      if (isJoshGordon) console.log("[v0] Josh Gordon: Blob doesn't exist, will upload")
+      console.log(`[v0] No existing blob found for ${personId}, will upload from Notion`)
     }
 
     let response: Response | undefined
@@ -106,11 +108,18 @@ export async function ingestImage(
       return { success: false, error: `Invalid content type: ${contentType}` }
     }
 
-    const extension = contentType.includes("png") ? "png" : contentType.includes("webp") ? "webp" : "jpg"
+    const extension = contentType.includes("png")
+      ? "png"
+      : contentType.includes("webp")
+        ? "webp"
+        : contentType.includes("gif")
+          ? "gif"
+          : "jpg"
     const filename = `people/${slug}.${extension}`
 
     const imageBuffer = await response.arrayBuffer()
-    if (isJoshGordon) console.log("[v0] Josh Gordon: Uploading to blob storage:", filename)
+    if (isJoshGordon)
+      console.log(`[v0] Uploading ${personId} to blob storage: ${filename} (${imageBuffer.byteLength} bytes)`)
 
     try {
       const blob = await put(filename, imageBuffer, {
@@ -120,7 +129,7 @@ export async function ingestImage(
         allowOverwrite: true,
       })
 
-      if (isJoshGordon) console.log("[v0] Josh Gordon: Upload successful:", blob.url)
+      if (isJoshGordon) console.log(`[v0] Successfully uploaded ${personId}: ${blob.url}`)
       return { success: true, canonicalUrl: blob.url }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error"

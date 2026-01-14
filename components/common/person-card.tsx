@@ -17,7 +17,7 @@ interface PersonCardProps {
 
 export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(true)
+  const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
 
   const isNeutral = type === "neutral"
@@ -39,10 +39,32 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
   const imageSrc = getImageSrc()
 
   useEffect(() => {
-    if (imageSrc && typeof window !== "undefined") {
+    if (!imageSrc) {
+      setImageLoaded(true) // No image to load, consider it "loaded"
+      return
+    }
+
+    // Reset states when image source changes
+    setImageLoaded(false)
+    setImageError(false)
+
+    if (typeof window !== "undefined") {
       const img = new Image()
+
+      // Set up event handlers before setting src
+      img.onload = () => {
+        setImageLoaded(true)
+      }
+
+      img.onerror = () => {
+        setImageError(true)
+        setImageLoaded(true) // Consider it "loaded" (with error) to stop showing loading state
+      }
+
       img.src = imageSrc
-      if (img.complete) {
+
+      // Check if already cached and loaded
+      if (img.complete && img.naturalHeight !== 0) {
         setImageLoaded(true)
       }
     }
@@ -82,7 +104,16 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-accord via-sky to-navy opacity-60 group-hover:opacity-100 transition-opacity duration-100" />
 
           <div className="h-80 relative bg-gradient-to-br from-gray-100 to-gray-50 overflow-hidden flex-shrink-0">
-            {(!imageSrc || imageError) && (
+            {imageSrc && !imageLoaded && !imageError && (
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-12 h-12 border-4 border-gray-300 border-t-accord rounded-full animate-spin mx-auto mb-3"></div>
+                  <p className="text-xs font-medium text-gray-500 tracking-wide">Loading...</p>
+                </div>
+              </div>
+            )}
+
+            {(!imageSrc || imageError) && imageLoaded && (
               <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-100 flex items-center justify-center">
                 <div className="text-center text-gray-400">
                   <div className="w-16 h-16 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full mx-auto mb-3 shadow-inner"></div>
@@ -91,11 +122,13 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
               </div>
             )}
 
-            {imageSrc && (
+            {imageSrc && !imageError && (
               <img
                 src={imageSrc || "/placeholder.svg"}
                 alt={person.title}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-102 transition-transform duration-100 ease-out"
+                className={`absolute inset-0 w-full h-full object-cover group-hover:scale-102 transition-transform duration-100 ease-out ${
+                  imageLoaded ? "opacity-100" : "opacity-0"
+                }`}
                 onLoad={handleImageLoad}
                 onError={handleImageError}
                 loading={index < 6 ? "eager" : "lazy"}
