@@ -15,6 +15,12 @@ interface Props {
 
 export default function NeutralsFilteredListClient({ neutrals }: Props) {
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null)
+  
+  // Debug: Log what we received from server
+  console.log("[v0] CLIENT: Received", neutrals.length, "neutrals")
+  neutrals.slice(0, 3).forEach(n => {
+    console.log("[v0] CLIENT:", n.title, "bodyHTML length:", n.bodyHTML?.length || 0, "preview:", n.bodyHTML?.substring(0, 50) || "EMPTY")
+  })
 
   const handleFilterClick = (filter: string) => {
     setSelectedFilter(selectedFilter === filter ? null : filter)

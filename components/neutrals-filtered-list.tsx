@@ -9,6 +9,7 @@ export default async function NeutralsFilteredList() {
 
   const neutralsWithHTML = neutrals.map((neutral) => {
     const bodyHTML = neutral.body?.length ? renderNotionBlocks(neutral.body) : ""
+    console.log("[v0] SERVER: Neutral", neutral.title, "body blocks:", neutral.body?.length || 0, "bodyHTML length:", bodyHTML.length)
     return { ...neutral, bodyHTML }
   })
 
