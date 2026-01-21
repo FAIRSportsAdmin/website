@@ -78,19 +78,16 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
     setImageLoaded(true)
   }
 
-  const getPreviewText = () => {
-    if (bodyHTML) {
-      if (typeof document === "undefined") return ""
-
-      const tempDiv = document.createElement("div")
-      tempDiv.innerHTML = bodyHTML
-      const plainText = tempDiv.textContent || tempDiv.innerText || ""
-      const sentences = plainText.split(/[.!?]+/).filter((s) => s.trim().length > 0)
-      const preview = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "." : "")
-      return preview.length > 120 ? preview.substring(0, 120) + "..." : preview
-    }
-    return ""
-  }
+  // Extract preview text from bodyHTML - computed once when bodyHTML changes
+  const previewText = (() => {
+    if (!bodyHTML) return ""
+    // Strip HTML tags using regex (works on both server and client)
+    const plainText = bodyHTML.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
+    if (!plainText) return ""
+    const sentences = plainText.split(/[.!?]+/).filter((s) => s.trim().length > 0)
+    const preview = sentences.slice(0, 2).join(". ") + (sentences.length > 2 ? "." : "")
+    return preview.length > 120 ? preview.substring(0, 120) + "..." : preview
+  })()
 
   return (
     <>
@@ -150,9 +147,9 @@ export function PersonCard({ person, type, bodyHTML, index = 0 }: PersonCardProp
               </div>
             )}
 
-            {getPreviewText() && (
+            {previewText && (
               <div className="mb-3 flex-shrink-0">
-                <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 font-medium">{getPreviewText()}</p>
+                <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 font-medium">{previewText}</p>
               </div>
             )}
 
